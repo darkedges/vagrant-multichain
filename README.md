@@ -16,3 +16,9 @@ ssh -i roles/multichain/files/id_rsa root@192.168.50.202
 
 # Commands
 the commands have been deployed into `/usr/local/bin`
+
+#Network ports
+```
+default-network-port = 9239
+default-rpc-port = 9238
+```
