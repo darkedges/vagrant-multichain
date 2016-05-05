@@ -34,9 +34,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end 
       multichain.vbguest.auto_update = true
 
-      if n == num_server_nodes
-        machine.vm.provision :ansible do |ansible|
-          ansible.playbook = "provision-mulitchain.yml"
+      if node_index == num_server_nodes
+        multichain.vm.provision :ansible do |ansible|
+          ansible.playbook = "provision-multichain.yml"
           ansible.limit = 'all'
           ansible.inventory_path = "static_inventory"
           ansible.raw_ssh_args = ANSIBLE_RAW_SSH_ARGS

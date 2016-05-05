@@ -7,6 +7,12 @@
   args:
     creates: "~/.multichain/chain1/params.dat"
 
+- name: Ensure we are always listening on network port 9239
+  lineinfile: dest=~/.multichain/chain1/params.dat regexp=^default-network-port line="default-network-port = 9239"
+
+- name: Ensure we are always listening on network port 9238
+  lineinfile: dest=~/.multichain/chain1/params.dat regexp=^default-rpc-port line="default-rpc-port = 9238"
+
 - name: Get service on port 9239
   shell: netstat -tunlp | grep ":9239 " | sed -e 's/.*\///'
   register: results
@@ -26,6 +32,8 @@
   delegate_to: 192.168.50.202
   register: multichaind2_address
   ignore_errors: yes
+
+- debug: var= multichaind2_address
 
 - name: Add address to connect and transact
   command: "/usr/local/bin/multichain-cli chain1 grant {{ multichaind2_address.stdout }} connect,send,receive"
