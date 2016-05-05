@@ -7,8 +7,9 @@ If that fails try
 
 You should be able to follow from step 3 at (http://www.multichain.com/getting-started/)[http://www.multichain.com/getting-started/]
 
-Server IP Addresses are 
+# Connecting 
+In the project directory use `ssh` with any of the following 
 ```
-192.168.50.201
-192.168.50.202
+ssh -i .vagrant/machines/multichain1/virtualbox/private_key vagrant@192.168.50.201
+ssh -i .vagrant/machines/multichain2/virtualbox/private_key vagrant@192.168.50.202
 ```
