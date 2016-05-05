@@ -21,7 +21,7 @@
   command: "/usr/local/bin/multichaind chain1 -daemon" 
   when: results.stdout.find('multichaind') == -1
 
-- name: Get service on port 9239
+- name: Get service on port 9239 on Server 2
   shell: netstat -tunlp | grep ":9239 " | sed -e 's/.*\///'
   register: multichaind2_running
   delegate_to: 192.168.50.202

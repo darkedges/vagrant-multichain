@@ -19,6 +19,11 @@
   with_file:
     - id_rsa.pub
 
+- name: Set up authorized_keys for the root user
+  authorized_key: user=vagrant key="{{ item }}"
+  with_file:
+    - id_rsa.pub
+
 - name: download multichain-1.0-alpha-19.tar.gz
   get_url: url=http://www.multichain.com/download/multichain-1.0-alpha-19.tar.gz dest=/tmp/multichain-1.0-alpha-19.tar.gz mode=0440
 
