@@ -1,0 +1,7 @@
+---
+
+- hosts: multichain
+  gather_facts: true
+  sudo: yes
+  roles:
+    - { role: multichain }

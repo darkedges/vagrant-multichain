@@ -1,0 +1,28 @@
+---
+
+- debug: msg="Installing MultiChain"
+
+- name: Install libselinux-python
+  yum: name=libselinux-python
+
+- name: Creates directory
+  file: path=~/.ssh state=directory mode=0600
+
+- name: Copy ssh keys - i know this is badddd
+  copy: src={{ item }} dest=~/.ssh/{{ item }} mode=0600
+  with_items:
+    - id_rsa
+    - id_rsa.pub
+
+- name: Set up authorized_keys for the root user
+  authorized_key: user=root key="{{ item }}"
+  with_file:
+    - id_rsa.pub
+
+- name: download multichain-1.0-alpha-19.tar.gz
+  get_url: url=http://www.multichain.com/download/multichain-1.0-alpha-19.tar.gz dest=/tmp/multichain-1.0-alpha-19.tar.gz mode=0440
+
+- name: unarchive multichain-1.0-alpha-19.tar.gz into /usr/local/bin
+  command: "tar -xvf /tmp/multichain-1.0-alpha-19.tar.gz --strip-components 1 -C /usr/local/bin"
+  args:
+    creates: /usr/local/bin/multichaind

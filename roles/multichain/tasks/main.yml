@@ -1,0 +1,7 @@
+---
+
+- include: multichain-install.yml
+  when: inventory_hostname in groups['multichain']
+
+- include: multichain-configure.yml
+  when: inventory_hostname == "multichain1"
