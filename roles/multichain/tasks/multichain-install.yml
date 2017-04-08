@@ -24,10 +24,26 @@
   with_file:
     - id_rsa.pub
 
-- name: download multichain-1.0-alpha-19.tar.gz
-  get_url: url=http://www.multichain.com/download/multichain-1.0-alpha-19.tar.gz dest=/tmp/multichain-1.0-alpha-19.tar.gz mode=0440
+- name: download {{ multichain_url }}
+  get_url: url="{{ multichain_url }}"
+           dest="/tmp/{{ multichain_file }}"
 
-- name: unarchive multichain-1.0-alpha-19.tar.gz into /usr/local/bin
-  command: "tar -xvf /tmp/multichain-1.0-alpha-19.tar.gz --strip-components 1 -C /usr/local/bin"
-  args:
-    creates: /usr/local/bin/multichaind
+- name: unarchive {{ multichain_file }} into /usr/local/bin
+  unarchive: src=/tmp/{{ multichain_file }}
+             dest={{ multichain_usr_parent_dir }}
+             remote_src=yes
+             copy=no
+             creates="{{ multichain_usr_parent_dir }}/multichain-{{ multichain_version }}"
+
+- name: Setup multichain distribution symlinks
+  file: src="{{ item.src }}"
+        dest="{{ item.dest }}"
+        state=link
+  with_items:
+    - { src: "{{ multichain_usr_parent_dir }}/multichain-{{ multichain_version }}", dest: "{{ multichain_usr_dir }}" }
+
+- name: Add path to profile (only if CentOS or RHEL)
+  template: src=etc/profile.d/multichain.sh.j2
+            dest="/etc/profile.d/multichain.sh"
+            mode=0644
+  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')

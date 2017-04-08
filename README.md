@@ -7,18 +7,22 @@ If that fails try
 
 You should be able to follow from step 3 at http://www.multichain.com/getting-started/
 
-# Connecting 
+## Connecting
+
 In the project directory use `ssh` with any of the following 
-```
+
+```bash
 ssh -i roles/multichain/files/id_rsa root@192.168.50.201
 ssh -i roles/multichain/files/id_rsa root@192.168.50.202
 ```
 
-# Commands
+## Commands
+
 the commands have been deployed into `/usr/local/bin`
 
-#Network ports
-```
+## Network ports
+
+```bash
 default-network-port = 9239
 default-rpc-port = 9238
 ```

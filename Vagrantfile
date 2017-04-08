@@ -19,7 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   num_server_nodes.times do |n|
     node_index = n+1
     config.vm.define "multichain#{node_index}" , autostart: true, primary: true do |multichain|
-      multichain.vm.box = "bento/centos-6.7"
+      multichain.vm.box = "centos/7"
       multichain.vm.network :private_network, ip: "192.168.50.#{ 200 + node_index }"
       multichain.hostmanager.aliases = ["multichain#{node_index}.vm.versent.local"]
 
@@ -37,9 +37,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       if node_index == num_server_nodes
         multichain.vm.provision :ansible do |ansible|
           ansible.playbook = "provision-multichain.yml"
+          ansible.galaxy_role_file = "requirements.yml"
           ansible.limit = 'all'
           ansible.inventory_path = "static_inventory"
           ansible.raw_ssh_args = ANSIBLE_RAW_SSH_ARGS
+          config.vm.synced_folder ".", "/vagrant", disabled: true
         end
       end
     end

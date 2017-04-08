@@ -1,2 +1,9 @@
 ---
 type: server
+# 1.0-alpha-19 
+multichain_version: 1.0-beta-1
+multichain_file: "multichain-{{ multichain_version }}.tar.gz"
+multichain_url: "http://www.multichain.com/download/{{ multichain_file }}"
+
+multichain_usr_parent_dir: "/usr/lib"  
+multichain_usr_dir: "{{ multichain_usr_parent_dir }}/multichain" 
