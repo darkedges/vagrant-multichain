@@ -9,13 +9,11 @@
       dest: /etc/systemd/system/multichain.service
   when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
 
-# - name: start 'datanode.service'
-#   service: name="{{ item }}"
-#            state=started
-#            enabled=yes
-#   with_items:
-#     - multichain
-#   when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
+- name: start 'datanode.service'
+  service: name="{{ item }}"
+           state=started
+           enabled=yes
+  with_items:
+    - multichain
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
 
-- name: Start MultiChain Server on Server
-  command: "{{ multichain_usr_dir }}/multichaind chain1 -daemon -bind={{ ansible_eth1.ipv4.address }}" 
