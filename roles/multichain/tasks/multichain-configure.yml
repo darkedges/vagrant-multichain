@@ -18,7 +18,7 @@
   register: results
 
 - name: Start MultiChain Server on Server 1
-  command: "{{ multichain_usr_dir }}/multichaind chain1 -daemon" 
+  command: "{{ multichain_usr_dir }}/multichaind chain1 -daemon -bind={{ ansible_eth1.ipv4.address }}" 
   when: results.stdout.find('multichaind') == -1
 
 - name: Get service on port 9239 on Server 2
@@ -27,20 +27,18 @@
   delegate_to: 192.168.50.202
 
 - name: Get MultiChain Server 2 address
-  shell: "{{ multichain_usr_dir }}/multichaind chain1@192.168.50.201:9239 | grep grant | awk '{ print $4'} | uniq" 
+  shell: "{{ multichain_usr_dir }}/multichaind chain1@{{ hostvars[groups['multichain-master'][0]].ansible_eth1.ipv4.address }}:9239 | grep grant | awk '{ print $4'} | uniq" 
   when: multichaind2_running.stdout.find('multichaind') == -1
   delegate_to: 192.168.50.202
   register: multichaind2_address
   ignore_errors: yes
-
-- debug: var=multichaind2_address
 
 - name: Add address to connect and transact
   command: "{{ multichain_usr_dir }}/multichain-cli chain1 grant {{ multichaind2_address.stdout }} connect,send,receive"
   when: multichaind2_running.stdout.find('multichaind') == -1
   register: results
 
-- name: Start MultiChain Server on Server 2
-  command: "{{ multichain_usr_dir }}/multichaind chain1@192.168.50.201:9239 -daemon" 
-  when: multichaind2_running.stdout.find('multichaind') == -1
-  delegate_to: 192.168.50.202
+- name: Stop multichain on server 1
+  command: "{{ multichain_usr_dir }}/multichain-cli chain1 stop"
+
+
