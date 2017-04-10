@@ -1,2 +1,7 @@
 
 ---
+
+multichain_name: chain1
+multichain_network_port: 9239
+multichain_rpc_port: 9238
+multichain_host: 0.0.0.0

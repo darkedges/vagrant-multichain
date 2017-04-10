@@ -1,6 +1,11 @@
 ---
 type: server
 # 1.0-alpha-19 
+
+multichain_name: chain1
+multichain_network_port: 9239
+multichain_rpc_port: 9238
+
 multichain_version: 1.0-beta-1
 multichain_file: "multichain-{{ multichain_version }}.tar.gz"
 multichain_url: "http://www.multichain.com/download/{{ multichain_file }}"

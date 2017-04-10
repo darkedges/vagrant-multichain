@@ -1,0 +1,12 @@
+[Unit]
+Description = MultiChain
+After = syslog.target network.target remote-fs.target
+
+[Service]
+Type=forking
+ExecStart = {{ multichain_usr_dir }}/multichaind {{ multichain_name }} -daemon -bind={{ ansible_eth1.ipv4.address }}
+ExecStop = {{ multichain_usr_dir }}/multichain-cli {{ multichain_name }} stop
+User = root
+
+[Install]
+WantedBy = multi-user.target

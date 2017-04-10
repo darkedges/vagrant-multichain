@@ -1,8 +1,14 @@
 ---
 
-- hosts: multichain
+# - hosts: multichain
+#   gather_facts: true
+#   become: yes
+#   roles:
+#     - { role: darkedges.commonos }
+#     - { role: darkedges.multichain }
+
+- hosts: multichain-master
   gather_facts: true
   become: yes
   roles:
-    - { role: darkedges.commonos }
-    - { role: multichain }
+    - { role: darkedges.multichain-explorer }

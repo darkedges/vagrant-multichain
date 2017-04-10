@@ -1,0 +1,73 @@
+---
+
+- name: install pre-requisites
+  yum: name="{{ item }}"
+       state=present
+  with_items:
+    - epel-release
+    - sqlite-devel
+    - python-devel
+    - git
+
+- name: install pip 'pycrypto'
+  pip: name=pycrypto
+       state=present      
+
+- name: clone "{{ multichain_explorer_git_url }}"
+  git:
+    repo: "{{ multichain_explorer_git_url }}"
+    dest: "{{ multichain_explorer_usr_dir }}"
+    version: "{{ multichain_explorer_git_version }}"
+
+    
+- name: Install MultiChain Explorer
+  command: "python setup.py install"
+  args:
+    chdir: "{{ multichain_explorer_usr_dir }}"
+    creates: /usr/lib/python2.7/site-packages/Mce
+
+- name: create log directory
+  file: path="{{ multichain_explorer_log_dir }}"
+        state=directory
+        mode=0755
+
+- name: Add 'multichain-explorer' config
+  template: src="{{ item.src }}"
+            dest="{{ item.dest }}"
+            mode=0644
+  with_items:
+    - src: mce.conf.j2
+      dest: "{{ multichain_explorer_usr_dir }}/{{ multichain_name }}.conf"
+
+- name: BootStrap  MultiChain Explorer
+  command: python -m Mce.abe --config chain1.conf --commit-bytes 100000 --no-serve
+  args:
+    chdir: "{{ multichain_explorer_usr_dir }}"
+
+- name: Add 'multichainexplorer.service' (only if CentOS or RHEL)
+  template: src="{{ item.src }}"
+            dest="{{ item.dest }}"
+            mode=0644
+  with_items:
+    - src: etc/systemd/system/multichainexplorer.service.j2
+      dest: /etc/systemd/system/multichainexplorer.service
+    - src: mceinit.sh.j2
+      dest: "{{ multichain_explorer_usr_dir }}/mceinit_{{ multichain_name }}.sh"
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
+
+- name: Add 'mceinit_{{ multichain_name }}.sh' (only if CentOS or RHEL)
+  template: src="{{ item.src }}"
+            dest="{{ item.dest }}"
+            mode=0755
+  with_items:
+    - src: mceinit.sh.j2
+      dest: "{{ multichain_explorer_usr_dir }}/mceinit_{{ multichain_name }}.sh"
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
+
+- name: start 'multichainexplorer.service'
+  service: name="{{ item }}"
+           state=started
+           enabled=yes
+  with_items:
+    - multichainexplorer
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )

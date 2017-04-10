@@ -1,0 +1,16 @@
+---
+
+multichain_name: chain1 
+multichain_rpc_port: 9238
+multichain_host: localhost
+
+multichain_explorer_git_url: https://github.com/MultiChain/multichain-explorer.git
+multichain_explorer_git_version: 377697b2844f1b3ab2c137f3670343ddadfb3161
+
+multichain_explorer_dir_name: multichain-explorer
+
+multichain_explorer_usr_parent_dir: "/usr/lib"  
+multichain_explorer_usr_dir: "{{ multichain_explorer_usr_parent_dir }}/{{ multichain_explorer_dir_name }}" 
+multichain_explorer_log_parent_dir: /var/log/
+multichain_explorer_log_dir: "/var/log/{{ multichain_explorer_dir_name }}"
+multichain_explorer_log_file: "{{ multichain_explorer_log_dir }}/output.log"

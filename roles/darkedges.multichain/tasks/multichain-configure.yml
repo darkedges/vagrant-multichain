@@ -1,0 +1,53 @@
+---
+
+- debug: msg="Configuring MultiChain Servers"
+
+- name: Create Multichain {{ multichain_name }}
+  command: "{{ multichain_usr_dir }}/multichain-util create {{ multichain_name }}" 
+  args:
+    creates: "~/.multichain/{{ multichain_name }}/params.dat"
+
+- name: Ensure we are always listening on network port {{ multichain_network_port }}
+  lineinfile: dest=~/.multichain/{{ multichain_name }}/params.dat 
+              regexp=^default-network-port 
+              line="default-network-port = {{ multichain_network_port }}"
+
+- name: Ensure we are always listening on rpc port {{ multichain_rpc_port }}
+  lineinfile: dest=~/.multichain/{{ multichain_name }}/params.dat 
+              regexp=^default-rpc-port 
+              line="default-rpc-port = {{ multichain_rpc_port }}"
+
+- name: Ensure using correct rpc port {{ multichain_rpc_port }}
+  lineinfile: dest=~/.multichain/{{ multichain_name }}/multichain.conf 
+              regexp=^rpcport
+              line="rpcport={{ multichain_rpc_port }}"
+
+- name: Get service on port {{ multichain_network_port }}
+  shell: netstat -tunlp | grep ":{{ multichain_network_port }} " | sed -e 's/.*\///'
+  register: results
+
+- name: Start MultiChain Server on Server 1
+  command: "{{ multichain_usr_dir }}/multichaind {{ multichain_name }} -daemon -bind={{ ansible_eth1.ipv4.address }}" 
+  when: results.stdout.find('multichaind') == -1
+
+- name: Get service on port {{ multichain_network_port }} on Server 2
+  shell: netstat -tunlp | grep ":{{ multichain_network_port }} " | sed -e 's/.*\///'
+  register: multichaind2_running
+  delegate_to: 192.168.50.202
+
+- name: Get MultiChain Server 2 address
+  shell: "{{ multichain_usr_dir }}/multichaind {{ multichain_name }}@{{ hostvars[groups['multichain-master'][0]].ansible_eth1.ipv4.address }}:9239 | grep grant | awk '{ print $4'} | uniq" 
+  when: multichaind2_running.stdout.find('multichaind') == -1
+  delegate_to: 192.168.50.202
+  register: multichaind2_address
+  ignore_errors: yes
+
+- name: Add address to connect and transact
+  command: "{{ multichain_usr_dir }}/multichain-cli {{ multichain_name }} grant {{ multichaind2_address.stdout }} connect,send,receive"
+  when: multichaind2_running.stdout.find('multichaind') == -1
+  register: results
+
+- name: Stop multichain on server 1
+  command: "{{ multichain_usr_dir }}/multichain-cli {{ multichain_name }} stop"
+
+

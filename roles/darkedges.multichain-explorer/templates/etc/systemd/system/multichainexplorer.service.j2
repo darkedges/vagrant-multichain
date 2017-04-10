@@ -1,0 +1,12 @@
+[Unit]
+Description = MultiChain Explorer
+After = syslog.target network.target remote-fs.target
+
+[Service]
+Type=forking
+ExecStart = {{ multichain_explorer_usr_dir }}/mceinit_{{ multichain_name }}.sh start
+ExecStop = {{ multichain_explorer_usr_dir }}/mceinit_{{ multichain_name }}.sh stop
+User = root
+
+[Install]
+WantedBy = multi-user.target
