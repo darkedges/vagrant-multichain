@@ -11,4 +11,6 @@
   gather_facts: true
   become: yes
   roles:
-    - { role: darkedges.multichain-explorer }
+    # - { role: darkedges.multichain-explorer }
+    #- { role: geerlingguy.nodejs }
+    - { role: darkedges.bws }

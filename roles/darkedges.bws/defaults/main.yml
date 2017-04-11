@@ -1,0 +1,11 @@
+---
+
+bws_git_url: https://github.com/MultiChain/multichain-explorer.git
+bws_git_version: 4f7ddace5f99e4994d4c9c61d80cd87ebe694495
+
+bws_version: 1.15
+bws_file: "v{{ bws_version }}.zip"
+bws_url: "https://github.com/bitpay/bitcore-wallet-service/archive/{{ bws_file }}"
+
+bws_usr_parent_dir: "/usr/lib"  
+bws_usr_dir: "{{ bws_usr_parent_dir }}/bitcore-wallet-service" 

@@ -1,0 +1,13 @@
+[Unit]
+Description = Bitcore Wallet Service
+After = syslog.target network.target remote-fs.target
+
+[Service]
+Type=forking
+ExecStart = /usr/bin/npm start
+ExecStop = /usr/bin/npm stop
+WorkingDirectory = {{ bws_usr_dir }}
+User = root
+
+[Install]
+WantedBy = multi-user.target

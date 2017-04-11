@@ -1,0 +1,46 @@
+---
+
+# - name: install pre-requisite packages
+#   yum: name=unzip
+#        state=present
+
+# - name: download {{ bws_url }}
+#   get_url: url="{{ bws_url }}"
+#            dest="/tmp/{{ bws_file }}"
+
+# - name: unarchive {{ bws_file }} into {{ bws_usr_parent_dir }}
+#   unarchive: src=/tmp/{{ bws_file }}
+#              dest={{ bws_usr_parent_dir }}
+#              remote_src=yes
+#              copy=no
+#              creates="{{ bws_usr_parent_dir }}/{{ bws_version }}"
+
+# - name: Setup bws distribution symlinks
+#   file: src="{{ item.src }}"
+#         dest="{{ item.dest }}"
+#         state=link
+#   with_items:
+#     - { src: "{{ bws_usr_parent_dir }}/bitcore-wallet-service-{{ bws_version }}", dest: "{{ bws_usr_dir }}" }
+
+# - name: install npm pre-requisites
+#   command: "npm install"
+#   args:
+#     chdir: "{{ bws_usr_dir }}"
+
+- name: Add 'bws.service' (only if CentOS or RHEL)
+  template: src="{{ item.src }}"
+            dest="{{ item.dest }}"
+            mode=0644
+  with_items:
+    - src: etc/systemd/system/bws.service.j2
+      dest: /etc/systemd/system/bws.service
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
+
+
+- name: start 'bws.service'
+  service: name="{{ item }}"
+           state=started
+           enabled=yes
+  with_items:
+    - bws
+  when: ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
