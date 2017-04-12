@@ -3,3 +3,4 @@
 roles/darkedges.commonos/
 roles/geerlingguy.ntp/
 roles/geerlingguy.nodejs/
+roles/lesmyrmidons.mongodb/

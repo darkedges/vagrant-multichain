@@ -1,16 +1,27 @@
 ---
 
-# - hosts: multichain
-#   gather_facts: true
-#   become: yes
-#   roles:
-#     - { role: darkedges.commonos }
-#     - { role: darkedges.multichain }
+- hosts: multichain
+  gather_facts: true
+  become: yes
+  roles:
+    - { role: darkedges.commonos }
+    - { role: darkedges.multichain }
+
+- hosts: multichain-master
+  gather_facts: true
+  become: yes
+  post_tasks:
+    - name: start 'mongod'
+      service: name="mongod"
+               state=started
+               enabled=yes
+  roles:
+    - { role: lesmyrmidons.mongodb }
 
 - hosts: multichain-master
   gather_facts: true
   become: yes
   roles:
-    # - { role: darkedges.multichain-explorer }
-    #- { role: geerlingguy.nodejs }
+    - { role: darkedges.multichain-explorer }
+    - { role: geerlingguy.nodejs }
     - { role: darkedges.bws }

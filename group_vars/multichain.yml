@@ -5,3 +5,9 @@ multichain_name: chain1
 multichain_network_port: 9239
 multichain_rpc_port: 9238
 multichain_host: 0.0.0.0
+
+# MongoDB
+mongodb_version: "3.4"
+mongodb_repo_baseurl: "https://repo.mongodb.org/yum/{{ ansible_os_family | lower }}/{{  ansible_distribution_version.split('.')[0] }}/mongodb-org/{{ mongodb_version }}/{{ ansible_machine }}/"
+mongodb_repo_gpgcheck: no
+mongodb_repo_gpgkey: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc"
